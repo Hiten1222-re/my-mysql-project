@@ -1,4 +1,4 @@
-# Data cleaning 
+# First Data cleaning project using basic controls - select,insert,alter,update etc. 
 
 select * from layoffs;
 
@@ -36,7 +36,7 @@ update layoffs3 set location='Malmo'
 where location='MalmÃ¶'
 ;
 
-# Formatting industry
+# Formatting column industry
 select distinct industry from layoffs3 order by industry;
 
 select * from layoffs3 where industry='';
@@ -62,7 +62,7 @@ where industry like 'Crypto%';
 update layoffs3 set industry='Other'
 where isnull(industry);
 
-# Formatting country
+# Formatting column country
 
 select distinct country from layoffs3 order by country;
 
