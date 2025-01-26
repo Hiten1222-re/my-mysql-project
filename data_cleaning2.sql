@@ -1,6 +1,6 @@
-# Data cleaning 
+# Data cleaning using concepts - Window functions,update,trim,join etc.
 
-
+# creating new table to perform operations 
 select * from nashville_housing_data_2013_2016;
 
 CREATE TABLE `clean_nashville` (
@@ -44,11 +44,13 @@ select *,row_number() over(partition by `Parcel ID`,`Land Use`,`Property Address
 `Legal Reference`,`Owner Name`,Address,City,`Year Built`) roww
 from nashville_housing_data_2013_2016;
 
+# deleting duplicate data
 delete from clean_nashville
 where roww>1;
 
 select * from clean_nashville;
 
+# removing uncessary whitespaces
 update clean_nashville set
 `Parcel ID`= trim(`Parcel ID`),
 `Land Use`= trim(`Land use`),
@@ -61,25 +63,13 @@ Address=trim(address),
 City=trim(City),
 `Year Built`=trim(`year Built`);
 
+# Standardising data
 select `Property Address`,`Address` from clean_nashville where `Property Address`like '0%' and
 Address not like '0%';
 
-select * from clean_nashville n1
-join clean_nashville n2
-	on n1.`Parcel ID`=n2.`Parcel ID`
-    where n1.`Property address`='0' and n2.`Property address`<>'0';
-    
-    
-update clean_nashville n1
-join clean_nashville n2
-	on n1.`Parcel ID`=n2.`Parcel ID`
-    set n1.`property address`=n2.`property address`
-    where n1.`Property address`='0' and n2.`Property address`<>'0';
-
+# property address = address as both have same cities
 update clean_nashville set `property address`=address
 where `property address` like '0%' and address not like '0%' and address <> '';
-
-select str_to_date(`sale date`,'%m/%d/%Y') from clean_nashville;
 
 select convert(`sale date`,date) from clean_nashville;
 
