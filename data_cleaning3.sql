@@ -1,8 +1,12 @@
+# Data cleaning using concepts - CTEs,trim etc.
+
 select * from us_regional_sales_data;
 
+# setting proper name to column
 alter table us_regional_sales_data
 rename column `ï»¿OrderNumber` to OrderNumber;
 
+# checking for duplicate data
 with cc as(
 select *,row_number() over(partition by OrderNumber, `Sales Channel`, 
 WarehouseCode, ProcuredDate, OrderDate, ShipDate, DeliveryDate, 
@@ -14,10 +18,7 @@ from us_regional_sales_data
 select * from cc
 where rown >1;
 
-select orderDate,str_to_date(orderDate , '%d/%m/%Y') from us_regional_sales_data;
-
-update us_regional_sales_data set OrderDate=str_to_date(orderDate , '%d/%m/%Y');
-
+# Removing extra whitespaces
 update us_regional_sales_data set 
 OrderNumber=Trim(OrderNumber),
 `Sales Channel`=Trim(`Sales Channel`), 
@@ -34,6 +35,11 @@ WarehouseCode=Trim(WarehouseCode),
  `Discount Applied`=Trim(`Discount Applied`), 
  `Unit Cost`=Trim(`Unit Cost`), 
  `Unit Price`=Trim(`Unit Price`);
+
+# correcting dates format
+select orderDate,str_to_date(orderDate , '%d/%m/%Y') from us_regional_sales_data;
+
+update us_regional_sales_data set OrderDate=str_to_date(orderDate , '%d/%m/%Y');
 
 select ShipDate,str_to_date(ShipDate , '%d/%m/%Y') from us_regional_sales_data;
 
@@ -62,9 +68,7 @@ modify column OrderDate date;
 alter table us_regional_sales_data
 modify column `Unit Cost` double;
 
-select `Unit Price`,convert(`Unit Price`,double)
- from us_regional_sales_data;
-
+# correcting currencies format
 update us_regional_sales_data
 set `Unit Cost`=replace(`Unit Cost`,',','');
 
